@@ -193,7 +193,7 @@ class TagLint {
       } else if (hasDiff) {
         action = Action.Lint;
       };
-      
+
       seen[hash] = tag;
       result.push({tag, action});
     });
