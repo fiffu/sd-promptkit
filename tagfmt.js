@@ -9,21 +9,21 @@ class FormattedTag {
     const rawTag = orig.toLowerCase().trim();
 
     let {tagBody, leftParen, rightParen} = this.normParens(rawTag);
-    let {tag, weight} = this.normTagBody(tagBody);
+    let {name, weight} = this.normTagBody(tagBody);
 
     this.orig = orig;
-    this.tag = tag;
+    this.tagName = name;
     this.weight = weight;
     this.normalized = (
       leftParen
-      + tag
+      + name
       + (weight && `: ${weight}` || '')
       + rightParen
     );
   }
 
   get hashKey() {
-    return this.normalized;
+    return this.tagName;
   }
 
   /** @param {String} tagBody  */
@@ -72,15 +72,15 @@ class FormattedTag {
 
   /** @param {string} tagBody */
   normTagBody(tagBody) {
-    let tag = '';
+    let name = '';
     let weight = 0;
     if (tagBody.indexOf(':') > -1) {
-      [tag, weight] = tagBody.split(':', 2);
-      weight = this.normWeight(right);
+      [name, weight] = tagBody.split(':', 2);
+      weight = this.normWeight(weight);
     } else {
-      tag = tagBody;
+      name = tagBody;
     }
-    return {tag, weight};
+    return {name, weight};
   }
 
   /**
@@ -183,7 +183,7 @@ class TagFmt {
         action = Action.Lint;
       };
       
-      seen[hash] = true;
+      seen[hash] = tag;
       result.push({tag, action});
     });
 
