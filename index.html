@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 <head>
   <title>SD promptkit</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
@@ -7,97 +7,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="tagfmt.js"></script>
-
-  <style id="styles">
-    body {
-      font-family: Verdana, sans-serif;
-      margin: 0px;
-    }
-
-    div.main {
-      margin: 8px;
-      width: 60%;
-    }
-
-    #input {
-      height: 6em;
-      width: 100%;
-    }
-
-    div.output {
-      padding: 5px;
-      margin: 5px 0px;
-      font-family: Courier;
-      word-wrap: normal;
-    }
-
-    div#processing{
-      border: 1px dotted black;
-    }
-
-    span.lint {
-      background-color: rgba(0, 0, 255, 0.2);
-    }
-
-    span.remove {
-      background-color: rgba(255, 0, 0, 0.4);
-    }
-
-    div#result{
-      border: 1px solid black;
-    }
-
-    div.footer-container {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      margin: 0px;
-    }
-
-    div.footer-contents {
-      font-size: 0.7rem;
-      font-weight: 800;
-    }
-
-    div.footer-text {
-      display: inline;
-      position: relative;
-      bottom: 0.5rem;
-    }
-
-    .no-line {
-      text-decoration: none;
-      color: #000;
-    }
-  </style>
 
   <script>
     function tagfmtOnInput() {
-      new TagFmt('input', 'result').onInput();
+      new TagFmt('tagfmtInput', 'tagfmtResult', 'tagfmtResultButton').onInput();
+    }
+
+    function tagfmtCopyResult() {
+      new TagFmt('tagfmtInput', 'tagfmtResult', 'tagfmtResultButton').copyResult();
     }
   </script>
 </head>
 
-<body>
-  <div class="main">
-    <div class="tagfmt">
-      <textarea id="input" onkeyup="tagfmtOnInput()">Paste tags here.</textarea>
-      <div class="output" id="result"><p>The cleaned output is shown here.</p></div>
+<body class="d-flex flex-column h-100">
+
+<main class="flex-fill">
+  <div class="tagfmt container bg-body-secondary">
+    <h1 class="mt-5">Tag formatter</h1>
+    <div class="form pb-3">
+      <label class="mt-3 mb-2" for="tagfmtInput">Paste tags here:</label>
+      <textarea class="form-control" id="tagfmtInput" placeholder="masterpiece, ultra-detailed, solo, ..." onkeyup="tagfmtOnInput()"></textarea>
+
+      <label class="mt-3 mb-2" for="tagfmtResult">Formatted tags:</label>
+      <button id="tagfmtResultButton" class="btn btn-outline-primary ms-2 btn-sm" title="" data-original-title="Copy to clipboard" onclick="tagfmtCopyResult()">Copy</button>
+      <div id="tagfmtResult" class="form-control">
+        <span class="fst-italic">(Tags will be shown here after formatting)</span>
+      </div>
+
     </div>
   </div>
 
-  <div class="footer-container">
-    <div class="footer-contents">
-      <a href="https://github.com/fiffu/sd-promptkit.github.io/" class="no-line">
-        <img src="github.png" width="16px" height="16px" style="padding: 6px; padding-right: 0px">
-        <div class="footer-text">
-          fiffu/sd-promptkit.github.io
-        </div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-body-tertiary">
+  <div class="container">
+      <a class="icon-link text-decoration-none fw-semibold text-body-secondary" href="https://github.com/fiffu/sd-promptkit">
+        <img src="github.png" width="16px" height="16px">
+        fiffu/sd-promptkit
       </a>
-    </div>
   </div>
-</body>
+</div>
+</footer>
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+</body>
 </html>

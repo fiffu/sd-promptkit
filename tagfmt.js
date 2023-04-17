@@ -105,13 +105,19 @@ class FormattedTag {
 
 
 class TagFmt {
-  constructor(inputId, resultId) {
-    this.eInput = document.getElementById(inputId)
-    this.eOutput = document.getElementById(resultId)
+  constructor(inputId, resultId, copyButtonId) {
+    this.eInput = document.getElementById(inputId);
+    this.eOutput = document.getElementById(resultId);
+    this.eCopyButton = document.getElementById(copyButtonId);
+  }
+
+  resetForm() {
+    this.eOutput.textContent = '';
+    this.eCopyButton.innerHTML = 'Copy';
   }
 
   onInput() {
-    this.eOutput.textContent = '';
+    this.resetForm()
 
     this.processTags(this.eInput.value).forEach(result => {
       let {tag, action} = result;
@@ -123,10 +129,29 @@ class TagFmt {
         this.eOutput.appendChild(span);
         break;
       case Action.Remove:
-        console.log(`Removed ${tag.normalized}`);
+        // console.log(`Removed ${tag.normalized}`);
         break;
       }
     });
+  }
+
+  copyResult() {
+    let result = '';
+
+    const spans = this.eOutput.getElementsByTagName('span');
+    for (const span of spans) {
+      result += span.innerText;
+    }
+
+    navigator.clipboard.writeText(
+      result,
+      () => {
+        alert(result);
+        console.log(result);
+        this.eCopyButton.innerHTML = 'Copied!';
+      },
+      err => { console.error(err) },
+    );
   }
 
   /**
