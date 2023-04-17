@@ -90,7 +90,8 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    return s.replace(/\n/, ' ');
+    return s.trim()
+      .replace(/\n/, ' ');
   }
 
   /**
