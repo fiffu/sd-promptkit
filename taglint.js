@@ -77,6 +77,10 @@ class FormattedTag {
     if (tagBody.indexOf(':') > -1) {
       [name, weight] = tagBody.split(':', 2);
       weight = this.normWeight(weight);
+    } else if (tagBody.match(/1\.\d *$/)) {  // don't be greedy, let's just match on 1.x
+      const numStr = tagBody.match(/1\.\d *$/)[0];
+      name = tagBody.slice(0, -numStr.length);
+      weight = this.normWeight(numStr);
     } else {
       name = tagBody;
     }
@@ -110,7 +114,7 @@ class FormattedTag {
  */
 
 
-class TagFmt {
+class TagLint {
   constructor(inputId, resultId, copyButtonId) {
     this.eInput = document.getElementById(inputId);
     this.eOutput = document.getElementById(resultId);
