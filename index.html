@@ -8,15 +8,15 @@
   <meta charset="utf-8">
 
   <link rel="stylesheet" href="style.css">
-  <script src="tagfmt.js"></script>
+  <script src="taglint.js"></script>
 
   <script>
-    function tagfmtOnInput() {
-      new TagFmt('tagfmtInput', 'tagfmtResult', 'tagfmtResultButton').onInput();
+    function taglintOnInput() {
+      new taglint('taglintInput', 'taglintResult', 'taglintResultButton').onInput();
     }
 
-    function tagfmtCopyResult() {
-      new TagFmt('tagfmtInput', 'tagfmtResult', 'tagfmtResultButton').copyResult();
+    function taglintCopyResult() {
+      new taglint('taglintInput', 'taglintResult', 'taglintResultButton').copyResult();
     }
   </script>
 </head>
@@ -24,19 +24,20 @@
 <body class="d-flex flex-column h-100">
 
 <main class="flex-fill">
-  <div class="tagfmt container bg-body-secondary">
-    <h1 class="mt-5">Tag formatter</h1>
-    <p>
-      Removes duplicates, badly formatted tags, etc.
-    </p>
+  <div class="taglint container mt-5 bg-body-secondary">
+    <h1>Tag formatter/linter</h1>
+    <ul>
+      <li>Removes duplicates</li>
+      <li>Fixes badly formatted tags, like unclosed parenthesis, newlines inside tag names, etc</li>
+    </ul>
     <div class="form pb-3">
-      <label class="mt-3 mb-2" for="tagfmtInput">Paste tags here:</label>
-      <textarea class="form-control" id="tagfmtInput" placeholder="masterpiece, ultra-detailed, solo, ..." onkeyup="tagfmtOnInput()"></textarea>
+      <label class="mt-3 mb-2" for="taglintInput">Paste tags here:</label>
+      <textarea class="form-control" id="taglintInput" placeholder="masterpiece, ultra-detailed, solo, ..." onkeyup="taglintOnInput()"></textarea>
 
-      <label class="mt-3 mb-2" for="tagfmtResult">Formatted tags:</label>
-      <button id="tagfmtResultButton" class="btn btn-outline-primary ms-2 btn-sm" title="" data-original-title="Copy to clipboard" onclick="tagfmtCopyResult()">Copy</button>
-      <div id="tagfmtResult" class="form-control">
-        <span class="fst-italic">(Tags will be shown here after formatting)</span>
+      <label class="mt-3 mb-2" for="taglintResult">Formatted tags:</label>
+      <button id="taglintResultButton" class="btn btn-outline-primary ms-2 btn-sm" title="" data-original-title="Copy to clipboard" onclick="taglintCopyResult()">Copy</button>
+      <div id="taglintResult" class="form-control">
+        <span class="fst-italic">(Tags will be shown here after linting)</span>
       </div>
 
     </div>

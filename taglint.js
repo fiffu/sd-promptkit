@@ -80,7 +80,13 @@ class FormattedTag {
     } else {
       name = tagBody;
     }
+    name = this.normName(name);
     return {name, weight};
+  }
+
+  /** @param {string} s */
+  normName(s) {
+    return s.replace(/\n/, ' ');
   }
 
   /**
