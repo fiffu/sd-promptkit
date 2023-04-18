@@ -11,6 +11,15 @@
   <script src="taglint.js"></script>
 
   <script>
+    function init() {
+      document.onkeydown = function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+          taglintOnInput();
+          taglintCopyResult();
+        }
+      };
+    }
+
     function taglintOpts() {
       return {
         preserveCase: document.getElementById('taglintOptCase').checked,
@@ -36,7 +45,7 @@
   </style>
 </head>
 
-<body class="d-flex flex-column h-100 bg-body-secondary">
+<body class="d-flex flex-column h-100 bg-body-secondary" onload="init()">
 
 <main class="flex-fill">
   <!-- TagLint -->
