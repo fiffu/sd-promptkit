@@ -1,4 +1,4 @@
-const {FormattedTag, TagLint, trimBalancedBraces} = require('../taglint');
+const {FormattedTag, TagLint} = require('../taglint');
 const {should} = require('./libtest');
 
 

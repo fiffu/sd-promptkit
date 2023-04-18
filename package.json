@@ -1,0 +1,22 @@
+{
+  "name": "sd-promptkit",
+  "version": "0.0.1",
+  "description": "Simple tools for working with Stable Diffusion prompts",
+  "main": "taglint.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node ./tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fiffu/sd-promptkit.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fiffu/sd-promptkit/issues"
+  },
+  "homepage": "https://github.com/fiffu/sd-promptkit#readme"
+}
