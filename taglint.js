@@ -210,7 +210,7 @@ class TagLint {
   }
 
   onInput() {
-    this.resetForm()
+    this.resetForm();
 
     this.processTags(this.eInput.value).forEach(result => {
       let {tag, action} = result;
@@ -248,7 +248,7 @@ class TagLint {
   }
 
   tokenize(s) {
-    if (!this.opt.preserveNewlines) s = s.replace('\n', ',');
+    if (!this.opt.preserveNewlines) s = s.replace(/\n/g, ',');
     return s.split(',').filter(t => t.trim() !== '');
   }
 
@@ -261,7 +261,7 @@ class TagLint {
     const result = [];
 
     this.tokenize(allTags).forEach(rawTag => {
-      const tag = new FormattedTag(rawTag, opt);
+      const tag = new FormattedTag(rawTag, this.opt);
       const hash = tag.hashKey;
       const hasDiff = rawTag.trim() !== tag.normalized;
 
@@ -298,7 +298,10 @@ class TagLint {
 
 }
 
-(module || {}).exports = {
-  TagLint,
-  FormattedTag,
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    TagLint,
+    FormattedTag,
+  };
 }
