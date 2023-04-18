@@ -5,6 +5,20 @@ const Action = {
 }
 
 
+/**
+ * @typedef TagLintOptions
+ * @property {boolean} preserveCase default: false, coerces to lowercase
+ * @property {boolean} preserveUnderscores default: false, underscores convert to spaces
+ * @property {boolean} preserveNewlines default: false, newlines are treated as tag delimiters
+ */
+
+
+/**
+ * @typedef ProcessedResult
+ * @property {FormattedTag} tag
+ * @property {string} action
+ */
+
 
 class Braces {
   constructor(braceMap) {
@@ -32,6 +46,7 @@ class Braces {
   }
 }
 
+
 class Stack extends Array {
   peek() {
     return this.length > 0
@@ -41,12 +56,6 @@ class Stack extends Array {
 }
 
 
-/**
- * @typedef ProcessedResult
- * @property {FormattedTag} tag
- * @property {string} action
- */
-
 class FormattedTag {
   braces = new Braces({
     '(': ')',
@@ -55,21 +64,26 @@ class FormattedTag {
     '<': '>',
   });
 
-  constructor(orig) {
-    const rawTag = orig.toLowerCase().trim();
+  /**
+   * @param {string} raw
+   * @param {TagLintOptions} opt
+   */
+  constructor(raw, opt) {
+    this.opt = {...opt};
 
-    let {tagBody, leftParen, rightParen} = this.normParens(rawTag);
+    raw = raw.trim();
+
+    let {tagBody, leftParen, rightParen} = this.normParens(raw);
     let {name, weight} = this.normTagBody(tagBody);
 
-    this.orig = orig;
     this.tagName = name;
     this.weight = weight;
-    this.normalized = (
-      leftParen
-      + name
-      + (weight && `: ${weight}` || '')
-      + rightParen
-    );
+    if (weight) {
+      name = `${name}: ${weight}`
+      leftParen = leftParen || '(';
+      rightParen = rightParen || ')';
+    }
+    this.normalized = leftParen + name + rightParen;
   }
 
   get hashKey() {
@@ -81,7 +95,7 @@ class FormattedTag {
     const pivot = Math.floor(tagBody.length / 2);
     const tagHead = tagBody.slice(0, pivot);
     const tagTail = tagBody.slice(-pivot, tagBody.length);
-    
+
     // accumulate leading openers
     let openers = [];
     for (let i=0; i<tagHead.length; i++) {
@@ -132,7 +146,9 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    s = s.trim().replace(/_/, ' ');
+    s = s.trim();
+    if (!this.opt.preserveCase) s = s.toLowerCase();
+    if (!this.opt.preserveUnderscores) s = s.replace(/_/g, ' ');
 
     let r = ''
     let stackClosers = new Stack();
@@ -176,7 +192,14 @@ class FormattedTag {
 
 
 class TagLint {
-  constructor(inputId, resultId, copyButtonId) {
+  /**
+   * @param {TagLintOptions} opt
+   * @param {string} inputId
+   * @param {string} resultId
+   * @param {string} copyButtonId
+   */
+  constructor(opt, inputId, resultId, copyButtonId) {
+    this.opt = {...opt};
     this.eInput = document.getElementById(inputId);
     this.eOutput = document.getElementById(resultId);
     this.eCopyButton = document.getElementById(copyButtonId);
@@ -188,7 +211,7 @@ class TagLint {
   }
 
   onInput() {
-    this.resetForm()
+    this.resetForm();
 
     this.processTags(this.eInput.value).forEach(result => {
       let {tag, action} = result;
@@ -226,7 +249,8 @@ class TagLint {
   }
 
   tokenize(s) {
-    return s.replace('\n', ',').split(',').filter(t => t.trim() !== '');
+    if (!this.opt.preserveNewlines) s = s.replace(/\n/g, ',');
+    return s.split(',').filter(t => t.trim() !== '');
   }
 
   /**
@@ -238,11 +262,7 @@ class TagLint {
     const result = [];
 
     this.tokenize(allTags).forEach(rawTag => {
-      if (rawTag.trim() === '') {
-        return;
-      }
-
-      const tag = new FormattedTag(rawTag);
+      const tag = new FormattedTag(rawTag, this.opt);
       const hash = tag.hashKey;
       const hasDiff = rawTag.trim() !== tag.normalized;
 
@@ -279,7 +299,11 @@ class TagLint {
 
 }
 
-(module || {}).exports = {
-  TagLint,
-  FormattedTag,
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    Action,
+    TagLint,
+    FormattedTag,
+  };
 }
