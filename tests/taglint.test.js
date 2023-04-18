@@ -1,4 +1,4 @@
-const {FormattedTag, TagLint} = require('../taglint');
+const {Action, FormattedTag, TagLint} = require('../taglint');
 
 describe('FormattedTag', () => {
   for (const tc of [
@@ -105,31 +105,46 @@ describe('FormattedTag', () => {
 });
 
 describe('TagLintOptions', () => {
-  test('preserveUnderscores', () => {
+  describe('preserveCase', () => {
     const opt = {
       default: {preserveCase: false},
       enabled: {preserveCase: true},
     };
-    expect(new FormattedTag('', opt.default).normName('ASDF')).toBe('asdf');
-    expect(new FormattedTag('', opt.enabled).normName('ASDF')).toBe('ASDF');
+    test('tag name varies when opt is toggled', () => {
+      expect(new FormattedTag('', opt.default).normName('ASDF')).toBe('asdf');
+      expect(new FormattedTag('', opt.enabled).normName('ASDF')).toBe('ASDF');
+    });
   });
 
-  test('preserveUnderscores', () => {
+  describe('preserveUnderscores', () => {
     const opt = {
       default: {preserveUnderscores: false},
       enabled: {preserveUnderscores: true},
     };
-    expect(new FormattedTag('', opt.default).normName('a_s_d_f')).toBe('a s d f');
-    expect(new FormattedTag('', opt.enabled).normName('a_s_d_f')).toBe('a_s_d_f');
+    test('tag name varies when opt is toggled', () => {
+      expect(new FormattedTag('', opt.default).normName('a_s_d_f')).toBe('a s d f');
+      expect(new FormattedTag('', opt.enabled).normName('a_s_d_f')).toBe('a_s_d_f');
+    });
+    test('tag output action varies when opt is toggled', () => {
+      const allTags = 'solo focus, solo_focus';
+      expect(
+        new TagLint(opt.default).processTags(allTags).map(f => f.action)
+      ).toStrictEqual([Action.Noop, Action.Remove]);
+      expect(
+        new TagLint(opt.enabled).processTags(allTags).map(f => f.action)
+      ).toStrictEqual([Action.Noop, Action.Noop]);
+    });
   });
 
-  test('preserveNewlines', () => {
+  describe('preserveNewlines', () => {
     const opt = {
       default: {preserveNewlines: false},
       enabled: {preserveNewlines: true},
     };
-    expect(new TagLint(opt.default).tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
-    expect(new TagLint(opt.enabled).tokenize('a,b\nc')).toStrictEqual(['a', 'b\nc']);
+    test('tag tokenization varies when opt is toggled', () => {
+      expect(new TagLint(opt.default).tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
+      expect(new TagLint(opt.enabled).tokenize('a,b\nc')).toStrictEqual(['a', 'b\nc']);
+    });
   });
 });
 
@@ -151,4 +166,13 @@ describe('TagLint', () => {
       expect(t.tokenize('a,b\n,c')).toStrictEqual(['a', 'b', 'c']);
     });
   });
+  
+  describe('processTags()', () => {
+    const result = new TagLint().processTags(
+      'masterpiece, (masterpiece: 1.4), SOLO focus, solo_focus'
+    );
+    expect(result.map(f => f.action)).toStrictEqual([Action.Noop, Action.Remove, Action.Lint, Action.Remove]);
+    expect(result.map(f => f.tag.hashKey)).toStrictEqual(['masterpiece', 'masterpiece', 'solo focus', 'solo focus']);
+  });
 });
+

@@ -302,6 +302,7 @@ class TagLint {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    Action,
     TagLint,
     FormattedTag,
   };
