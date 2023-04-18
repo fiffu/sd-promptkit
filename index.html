@@ -14,7 +14,7 @@
     function taglintOpts() {
       return {
         preserveCase: document.getElementById('taglintOptCase').checked,
-        preserveUnderscore: document.getElementById('taglintOptUnderscore').checked,
+        preserveUnderscores: document.getElementById('taglintOptUnderscores').checked,
         preserveNewlines: document.getElementById('taglintOptNewlines').checked,
       }
     }
@@ -54,11 +54,11 @@
         </div>
         <div class="btn-group btn-group-sm me-2" role="group" aria-label="Second group">
           <input type="checkbox" class="btn-check btn-sm" id="taglintOptCase" autocomplete="off" onchange="taglintOnInput()">
-          <label class="btn btn-outline-primary" for="taglintOptCase">Preserve case</label>
-          <input type="checkbox" class="btn-check btn-sm" id="taglintOptUnderscore" autocomplete="off" onchange="taglintOnInput()">
-          <label class="btn btn-outline-primary" for="taglintOptUnderscore">Preserve underscores</label>
+          <label class="btn btn-outline-secondary" for="taglintOptCase">Preserve case</label>
+          <input type="checkbox" class="btn-check btn-sm" id="taglintOptUnderscores" autocomplete="off" onchange="taglintOnInput()">
+          <label class="btn btn-outline-secondary" for="taglintOptUnderscores">Preserve underscores</label>
           <input type="checkbox" class="btn-check btn-sm" id="taglintOptNewlines" autocomplete="off" onchange="taglintOnInput()">
-          <label class="btn btn-outline-primary" for="taglintOptNewlines">Preserve newlines</label>
+          <label class="btn btn-outline-secondary" for="taglintOptNewlines">Preserve newlines</label>
         </div>
       </div>
 

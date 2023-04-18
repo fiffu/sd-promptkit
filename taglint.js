@@ -8,7 +8,7 @@ const Action = {
 /**
  * @typedef TagLintOptions
  * @property {boolean} preserveCase default: false, coerces to lowercase
- * @property {boolean} preserveUnderscore default: false, underscores convert to spaces
+ * @property {boolean} preserveUnderscores default: false, underscores convert to spaces
  * @property {boolean} preserveNewlines default: false, newlines are treated as tag delimiters
  */
 
@@ -147,7 +147,7 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    if (!this.opt.preserveUnderscore) s = s.trim().replace(/_/, ' ');
+    if (!this.opt.preserveUnderscores) s = s.trim().replace(/_/g, ' ');
 
     let r = ''
     let stackClosers = new Stack();
