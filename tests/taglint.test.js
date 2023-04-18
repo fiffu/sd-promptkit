@@ -16,16 +16,16 @@ for (const tc of [
     expectNormalized: '(def: 1.4)',
   },
   {
-    input: '(((too many openers for tag strength)',
-    expectTagName: 'too many openers for tag strength',
+    input: '(((too many openers for tag weight)',
+    expectTagName: 'too many openers for tag weight',
     expectWeight: 0,
-    expectNormalized: '(((too many openers for tag strength)))',
+    expectNormalized: '(((too many openers for tag weight)))',
   },
   {
-    input: '(too many closers for tag strength)))',
-    expectTagName: 'too many closers for tag strength',
+    input: '(too many closers for tag weight)))',
+    expectTagName: 'too many closers for tag weight',
     expectWeight: 0,
-    expectNormalized: '(((too many closers for tag strength)))',
+    expectNormalized: '(too many closers for tag weight)',
   },
   {
     input: '(hjk (test): 1.4)',
@@ -44,6 +44,12 @@ for (const tc of [
     expectTagName: 'unmatched internal (openers are closed)',
     expectWeight: 1.4,
     expectNormalized: '(unmatched internal (openers are closed): 1.4)',
+  },
+  {
+    input: 'internal tags (without weight)',
+    expectTagName: 'internal tags (without weight)',
+    expectWeight: 0,
+    expectNormalized: 'internal tags (without weight)',
   },
 ]) {
   const tag = new FormattedTag(tc.input);
