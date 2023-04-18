@@ -132,7 +132,7 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    s = s.trim().replace(/\n/, ' ');
+    s = s.trim().replace(/_/, ' ');
 
     let r = ''
     let stackClosers = new Stack();
@@ -225,6 +225,10 @@ class TagLint {
     );
   }
 
+  tokenize(s) {
+    return s.replace('\n', ',').split(',').filter(t => t.trim() !== '');
+  }
+
   /**
    * @param {string} allTags
    * @return {Array<ProcessedResult>}
@@ -233,7 +237,7 @@ class TagLint {
     const seen = {};
     const result = [];
 
-    allTags.split(',').forEach(rawTag => {
+    this.tokenize(allTags).forEach(rawTag => {
       if (rawTag.trim() === '') {
         return;
       }
