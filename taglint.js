@@ -4,7 +4,57 @@ const Action = {
   Lint: 'Lint',
 }
 
+
+
+class Braces {
+  constructor(braceMap) {
+    this.b = braceMap;
+  }
+
+  match(s) {
+    for (let [opener, closer] of this.entries(this.b)) {
+      if (s === opener) return closer;
+      if (s === closer) return opener;
+    }
+    return undefined;
+  }
+
+  isOpener(s) {
+    return Object.keys(this.b).indexOf(s) > -1
+  }
+
+  isCloser(s) {
+    return Object.values(this.b).indexOf(s) > -1
+  }
+
+  entries() {
+    return Object.entries(this.b);
+  }
+}
+
+class Stack extends Array {
+  peek() {
+    return this.length > 0
+      ? this[this.length-1]
+      : undefined;
+  }
+}
+
+
+/**
+ * @typedef ProcessedResult
+ * @property {FormattedTag} tag
+ * @property {string} action
+ */
+
 class FormattedTag {
+  braces = new Braces({
+    '(': ')',
+    '[': ']',
+    '{': '}',
+    '<': '>',
+  });
+
   constructor(orig) {
     const rawTag = orig.toLowerCase().trim();
 
@@ -28,49 +78,45 @@ class FormattedTag {
 
   /** @param {String} tagBody  */
   normParens(tagBody) {
-    const braces = {
-      '(': ')',
-      '[': ']',
-      '{': '}',
-      '<': '>',
-    };
-    const openingBraces = Object.keys(braces);
-    const closingBraces = Object.values(braces);
-    const allBraces = openingBraces.concat(...closingBraces);
+    const pivot = Math.floor(tagBody.length / 2);
+    const tagHead = tagBody.slice(0, pivot);
+    const tagTail = tagBody.slice(-pivot, tagBody.length);
+    
+    // accumulate leading openers
+    let openers = [];
+    for (let i=0; i<tagHead.length; i++) {
+      const ch = tagHead[i]
+      if (this.braces.isOpener(ch)) openers.push(ch);
+      else break;
+    }
+    tagBody = tagBody.slice(openers.length, tagBody.length);
 
-    const openers = this.getLeadingChars(openingBraces, tagBody);
-    tagBody = tagBody.slice(openers.length);
+    // accumulate trailing closers
+    let closers = [];
+    for (let i=tagTail.length-1; i > 0; i--) {
+      const ch = tagTail[i];
+      if (this.braces.isCloser(ch)) closers.push(ch);
+      else break;
+    }
+    if (closers.length) tagBody = tagBody.slice(0, -closers.length);
 
-    const nonBraces = this.getLeadingChars(allBraces, tagBody, true);
-    tagBody = nonBraces.join('');
+    if (openers.length >= closers.length) {
+      closers = openers.map(o => this.braces.match(o));
+    } else {
+      openers = closers.map(c => this.braces.match(c));
+    }
 
     return {
-      tagBody,
       leftParen: openers.join(''),
-      rightParen: openers.map(o => braces[o]).join(''),
-    };
+      tagBody: tagBody,
+      rightParen: closers.join(''),
+    }
   }
 
   /**
-   * @param {[]string} charset
-   * @param {string} str
-   * @param {boolean} inverse If true, returns the chars that are _not_ in the charset.
-   * @return {[]string}
+   * @this FormattedTag
+   * @param {string} tagBody
    */
-  getLeadingChars(charset, str, inverse=false) {
-    let found = [];
-    for (const c of str) {
-      const isInSet = charset.indexOf(c) > -1;
-      if ((isInSet && !inverse) || (!isInSet && inverse)) {
-        found.push(c);
-        continue;
-      }
-      break;
-    }
-    return found;
-  }
-
-  /** @param {string} tagBody */
   normTagBody(tagBody) {
     let name = '';
     let weight = 0;
@@ -90,8 +136,33 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    return s.trim()
-      .replace(/\n/, ' ');
+    s = s.trim().replace(/\n/, ' ');
+
+    let r = ''
+    let stackClosers = new Stack();
+    s.split('').forEach(ch => {
+      if (this.braces.isOpener(ch)) {
+        // found opener, push its closer to stack
+        stackClosers.push(this.braces.match(ch));
+        r += ch;
+        return;
+
+      } else if (this.braces.isCloser(ch)) {
+        // only append matched closer, ignore unmatched
+        if (ch === stackClosers.peek()) {
+          r += ch;
+          stackClosers.pop();
+        }
+        return;
+
+      } else {
+        // not opener or closer, just append
+        r += ch;
+      }
+
+    })
+    const unusedClosers = stackClosers.join('');
+    return r + unusedClosers;
   }
 
   /**
@@ -106,13 +177,6 @@ class FormattedTag {
     return s;
   }
 }
-
-
-/**
- * @typedef ProcessedResult
- * @property {FormattedTag} tag
- * @property {string} action
- */
 
 
 class TagLint {
@@ -213,4 +277,9 @@ class TagLint {
     return span;
   }
 
+}
+
+(module || {}).exports = {
+  TagLint,
+  FormattedTag,
 }
