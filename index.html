@@ -27,13 +27,20 @@
       new TagLint('taglintInput', 'taglintResult', 'taglintResultButton', taglintOpts()).copyResult();
     }
   </script>
+
+  <style>
+    label, button {
+      font-size: 0.8em !important;
+    }
+
+  </style>
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 bg-body-secondary">
 
 <main class="flex-fill">
   <!-- TagLint -->
-  <div class="taglint container mt-5 bg-body-secondary">
+  <div class="taglint container pt-3">
     <h1>Tag formatter/linter</h1>
     <ul>
       <li>Removes duplicates</li>
@@ -43,11 +50,9 @@
       <label class="mt-3 mb-2" for="taglintInput">Paste tags here:</label>
       <textarea class="form-control" id="taglintInput" style="height: 150px;" placeholder="masterpiece, ultra-detailed, solo, ..." onkeyup="taglintOnInput()"></textarea>
 
-      
-      
-      <div class="btn-toolbar mb-1 mt-3" role="toolbar" aria-label="Lint result toolbar">
+      <div class="btn-toolbar mb-1 mt-3 align-items-center" role="toolbar" aria-label="Lint result toolbar">
         <div class="btn-group btn-group-sm me-2" role="group" aria-label="Result label">
-          <label class="" for="taglintResult">Formatted tags:</label>
+          <label for="taglintResult">Formatted tags:</label>
         </div>
         <div class="btn-group btn-group-sm me-2" role="group" aria-label="Copy result">
           <button id="taglintResultButton" class="btn btn-primary ms-2" title="" data-original-title="Copy to clipboard" onclick="taglintCopyResult()">Copy</button>
