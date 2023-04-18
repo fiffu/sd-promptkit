@@ -12,7 +12,7 @@
 
   <script>
     function init() {
-      document.onkeydown = function(e) {
+      document.onkeyup = function(e) {
         if (e.ctrlKey && e.key === 'Enter') {
           taglintOnInput();
           taglintCopyResult();
@@ -58,7 +58,7 @@
     </ul>
     <div class="form pb-3">
       <label class="mt-3 mb-2" for="taglintInput">Paste tags here:</label>
-      <textarea class="form-control" id="taglintInput" style="height: 150px;" placeholder="masterpiece, ultra-detailed, solo, ..." onkeydown="taglintOnInput()"></textarea>
+      <textarea class="form-control" id="taglintInput" style="height: 150px;" placeholder="masterpiece, ultra-detailed, solo, ..." onkeyup="taglintOnInput()"></textarea>
 
       <div class="btn-toolbar mb-1 mt-3 align-items-center" role="toolbar" aria-label="Lint result toolbar">
         <div class="btn-group btn-group-sm me-3 mt-1" role="group" aria-label="Result label">
