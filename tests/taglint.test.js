@@ -109,6 +109,11 @@ describe('TagLint', () => {
       const t = new TagLint();
       expect(t.tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
     })
+
+    test('ignores newline if specified in options', () => {
+      const t = new TagLint("", "", "", {preserveNewlines: true});
+      expect(t.tokenize('a,b\nc')).toStrictEqual(['a', 'b\nc']);
+    })
   
     test('filters out empty tokens after splitting on delimiter(s)', () => {
       const t = new TagLint();

@@ -5,6 +5,20 @@ const Action = {
 }
 
 
+/**
+ * @typedef TagLintOptions
+ * @property {boolean} preserveCase default: false, coerces to lowercase
+ * @property {boolean} preserveUnderscore default: false, underscores convert to spaces
+ * @property {boolean} preserveNewlines default: false, newlines are treated as tag delimiters
+ */
+
+
+/**
+ * @typedef ProcessedResult
+ * @property {FormattedTag} tag
+ * @property {string} action
+ */
+
 
 class Braces {
   constructor(braceMap) {
@@ -32,6 +46,7 @@ class Braces {
   }
 }
 
+
 class Stack extends Array {
   peek() {
     return this.length > 0
@@ -41,12 +56,6 @@ class Stack extends Array {
 }
 
 
-/**
- * @typedef ProcessedResult
- * @property {FormattedTag} tag
- * @property {string} action
- */
-
 class FormattedTag {
   braces = new Braces({
     '(': ')',
@@ -55,13 +64,19 @@ class FormattedTag {
     '<': '>',
   });
 
-  constructor(orig) {
-    const rawTag = orig.toLowerCase().trim();
+  /**
+   * @param {string} raw
+   * @param {TagLintOptions} opt
+   */
+  constructor(raw, opt) {
+    this.opt = {...opt};
 
-    let {tagBody, leftParen, rightParen} = this.normParens(rawTag);
+    raw = raw.trim();
+    if (!this.opt.preserveCase) raw = raw.toLowerCase();
+
+    let {tagBody, leftParen, rightParen} = this.normParens(raw);
     let {name, weight} = this.normTagBody(tagBody);
 
-    this.orig = orig;
     this.tagName = name;
     this.weight = weight;
     this.normalized = (
@@ -132,7 +147,7 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    s = s.trim().replace(/_/, ' ');
+    if (!this.opt.preserveUnderscore) s = s.trim().replace(/_/, ' ');
 
     let r = ''
     let stackClosers = new Stack();
@@ -176,10 +191,17 @@ class FormattedTag {
 
 
 class TagLint {
-  constructor(inputId, resultId, copyButtonId) {
+  /**
+   * @param {string} inputId
+   * @param {string} resultId
+   * @param {string} copyButtonId
+   * @param {TagLintOptions} opt
+   */
+  constructor(inputId, resultId, copyButtonId, opt) {
     this.eInput = document.getElementById(inputId);
     this.eOutput = document.getElementById(resultId);
     this.eCopyButton = document.getElementById(copyButtonId);
+    this.opt = {...opt};
   }
 
   resetForm() {
@@ -226,7 +248,8 @@ class TagLint {
   }
 
   tokenize(s) {
-    return s.replace('\n', ',').split(',').filter(t => t.trim() !== '');
+    if (!this.opt.preserveNewlines) s = s.replace('\n', ',');
+    return s.split(',').filter(t => t.trim() !== '');
   }
 
   /**
@@ -238,11 +261,7 @@ class TagLint {
     const result = [];
 
     this.tokenize(allTags).forEach(rawTag => {
-      if (rawTag.trim() === '') {
-        return;
-      }
-
-      const tag = new FormattedTag(rawTag);
+      const tag = new FormattedTag(rawTag, opt);
       const hash = tag.hashKey;
       const hasDiff = rawTag.trim() !== tag.normalized;
 
