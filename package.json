@@ -7,16 +7,19 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node ./tests/test.js"
+    "test": "jest --coverage=true"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fiffu/sd-promptkit.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "",
   "bugs": {
     "url": "https://github.com/fiffu/sd-promptkit/issues"
   },
-  "homepage": "https://github.com/fiffu/sd-promptkit#readme"
+  "homepage": "https://github.com/fiffu/sd-promptkit#readme",
+  "dependencies": {
+    "jest": "^25.1.0"
+  }
 }
