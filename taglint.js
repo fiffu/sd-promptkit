@@ -72,7 +72,6 @@ class FormattedTag {
     this.opt = {...opt};
 
     raw = raw.trim();
-    if (!this.opt.preserveCase) raw = raw.toLowerCase();
 
     let {tagBody, leftParen, rightParen} = this.normParens(raw);
     let {name, weight} = this.normTagBody(tagBody);
@@ -96,7 +95,7 @@ class FormattedTag {
     const pivot = Math.floor(tagBody.length / 2);
     const tagHead = tagBody.slice(0, pivot);
     const tagTail = tagBody.slice(-pivot, tagBody.length);
-    
+
     // accumulate leading openers
     let openers = [];
     for (let i=0; i<tagHead.length; i++) {
@@ -147,7 +146,9 @@ class FormattedTag {
 
   /** @param {string} s */
   normName(s) {
-    if (!this.opt.preserveUnderscores) s = s.trim().replace(/_/g, ' ');
+    s = s.trim();
+    if (!this.opt.preserveCase) s = s.toLowerCase();
+    if (!this.opt.preserveUnderscores) s = s.replace(/_/g, ' ');
 
     let r = ''
     let stackClosers = new Stack();
@@ -192,16 +193,16 @@ class FormattedTag {
 
 class TagLint {
   /**
+   * @param {TagLintOptions} opt
    * @param {string} inputId
    * @param {string} resultId
    * @param {string} copyButtonId
-   * @param {TagLintOptions} opt
    */
-  constructor(inputId, resultId, copyButtonId, opt) {
+  constructor(opt, inputId, resultId, copyButtonId) {
+    this.opt = {...opt};
     this.eInput = document.getElementById(inputId);
     this.eOutput = document.getElementById(resultId);
     this.eCopyButton = document.getElementById(copyButtonId);
-    this.opt = {...opt};
   }
 
   resetForm() {

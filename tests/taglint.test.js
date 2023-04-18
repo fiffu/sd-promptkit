@@ -93,9 +93,38 @@ describe('FormattedTag', () => {
       expect(tag.tagName).toBe(tc.expectTagName);
       expect(tag.weight).toBe(tc.expectWeight);
       expect(tag.normalized).toBe(tc.expectNormalized);
-    })
+    });
   }
-})
+});
+
+describe('TagLintOptions', () => {
+  test('preserveUnderscores', () => {
+    const opt = {
+      default: {preserveCase: false},
+      enabled: {preserveCase: true},
+    };
+    expect(new FormattedTag('', opt.default).normName('ASDF')).toBe('asdf');
+    expect(new FormattedTag('', opt.enabled).normName('ASDF')).toBe('ASDF');
+  });
+
+  test('preserveUnderscores', () => {
+    const opt = {
+      default: {preserveUnderscores: false},
+      enabled: {preserveUnderscores: true},
+    };
+    expect(new FormattedTag('', opt.default).normName('a_s_d_f')).toBe('a s d f');
+    expect(new FormattedTag('', opt.enabled).normName('a_s_d_f')).toBe('a_s_d_f');
+  });
+
+  test('preserveNewlines', () => {
+    const opt = {
+      default: {preserveNewlines: false},
+      enabled: {preserveNewlines: true},
+    };
+    expect(new TagLint(opt.default).tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
+    expect(new TagLint(opt.enabled).tokenize('a,b\nc')).toStrictEqual(['a', 'b\nc']);
+  });
+});
 
 
 describe('TagLint', () => {
@@ -104,20 +133,15 @@ describe('TagLint', () => {
       const t = new TagLint();
       expect(t.tokenize(`a,b`)).toStrictEqual(['a', 'b']);
     })
-  
+
     test('treats newline as delimiter by default', () => {
       const t = new TagLint();
       expect(t.tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
     })
 
-    test('ignores newline if specified in options', () => {
-      const t = new TagLint("", "", "", {preserveNewlines: true});
-      expect(t.tokenize('a,b\nc')).toStrictEqual(['a', 'b\nc']);
-    })
-  
     test('filters out empty tokens after splitting on delimiter(s)', () => {
       const t = new TagLint();
       expect(t.tokenize('a,b\n,c')).toStrictEqual(['a', 'b', 'c']);
-    })
-  })
-})
+    });
+  });
+});

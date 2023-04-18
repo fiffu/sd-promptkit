@@ -20,11 +20,11 @@
     }
 
     function taglintOnInput() {
-      new TagLint('taglintInput', 'taglintResult', 'taglintResultButton', taglintOpts()).onInput();
+      new TagLint(taglintOpts(), 'taglintInput', 'taglintResult', 'taglintResultButton').onInput();
     }
 
     function taglintCopyResult() {
-      new TagLint('taglintInput', 'taglintResult', 'taglintResultButton', taglintOpts()).copyResult();
+      new TagLint(taglintOpts(), 'taglintInput', 'taglintResult', 'taglintResultButton').copyResult();
     }
   </script>
 
