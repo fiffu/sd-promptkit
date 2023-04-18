@@ -17,6 +17,13 @@ describe('FormattedTag', () => {
       expectNormalized: 'masterpiece',
     },
     {
+      desc: 'underscore should be fixed',
+      input: 'le_malin',
+      expectTagName: 'le malin',
+      expectWeight: 0,
+      expectNormalized: 'le malin',
+    },
+    {
       desc: 'whitespace should be fixed',
       input: '(masterpiece : 1.4)',
       expectTagName: 'masterpiece',
@@ -88,4 +95,24 @@ describe('FormattedTag', () => {
       expect(tag.normalized).toBe(tc.expectNormalized);
     })
   }
+})
+
+
+describe('TagLint', () => {
+  describe('tokenize()', () => {
+    test('uses comma as delimiter by default', () => {
+      const t = new TagLint();
+      expect(t.tokenize(`a,b`)).toStrictEqual(['a', 'b']);
+    })
+  
+    test('treats newline as delimiter by default', () => {
+      const t = new TagLint();
+      expect(t.tokenize('a,b\nc')).toStrictEqual(['a', 'b', 'c']);
+    })
+  
+    test('filters out empty tokens after splitting on delimiter(s)', () => {
+      const t = new TagLint();
+      expect(t.tokenize('a,b\n,c')).toStrictEqual(['a', 'b', 'c']);
+    })
+  })
 })
