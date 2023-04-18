@@ -31,6 +31,13 @@ describe('FormattedTag', () => {
       expectNormalized: '(masterpiece: 1.4)',
     },
     {
+      desc: 'weight should be inferred even if colon is missing',
+      input: 'masterpiece 1.4 ',
+      expectTagName: 'masterpiece',
+      expectWeight: 1.4,
+      expectNormalized: '(masterpiece: 1.4)',
+    },
+    {
       desc: 'excess openers in tag weight should be closed',
       input: '(((masterpiece)',
       expectTagName: 'masterpiece',

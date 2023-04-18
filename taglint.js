@@ -78,12 +78,12 @@ class FormattedTag {
 
     this.tagName = name;
     this.weight = weight;
-    this.normalized = (
-      leftParen
-      + name
-      + (weight && `: ${weight}` || '')
-      + rightParen
-    );
+    if (weight) {
+      name = `${name}: ${weight}`
+      leftParen = leftParen || '(';
+      rightParen = rightParen || ')';
+    }
+    this.normalized = leftParen + name + rightParen;
   }
 
   get hashKey() {
