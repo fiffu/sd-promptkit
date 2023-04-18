@@ -239,12 +239,8 @@ class TagLint {
 
     navigator.clipboard.writeText(
       result,
-      () => {
-        alert(result);
-        console.log(result);
-        this.eCopyButton.innerHTML = 'Copied!';
-      },
-      err => { console.error(err) },
+      () => console.log(result),
+      err => console.error(err),
     );
   }
 
