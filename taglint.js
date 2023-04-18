@@ -100,11 +100,7 @@ class FormattedTag {
     }
     if (closers.length) tagBody = tagBody.slice(0, -closers.length);
 
-    if (openers.length >= closers.length) {
-      closers = openers.map(o => this.braces.match(o));
-    } else {
-      openers = closers.map(c => this.braces.match(c));
-    }
+    closers = openers.map(o => this.braces.match(o));
 
     return {
       leftParen: openers.join(''),
